@@ -15,11 +15,19 @@
     background:var(--ui-bg);color:var(--ui-text);min-height:100vh;padding:24px;
   }
   .wrap{max-width:1400px;margin:0 auto}
+  .topbar{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:24px}
   h1{font-size:20px;font-weight:500;margin-bottom:4px}
-  .sub{color:var(--ui-muted);font-size:13px;margin-bottom:24px}
+  .sub{color:var(--ui-muted);font-size:13px}
+  .profile-link{
+    flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;
+    color:#fff;background:var(--ui-accent);border:1px solid transparent;
+    padding:10px 14px;border-radius:8px;text-decoration:none;font-size:13px;font-weight:500;
+  }
+  .profile-link:hover{opacity:.9}
+  .profile-link .mark{font-weight:800;font-size:14px;line-height:1}
   .layout{display:grid;grid-template-columns:300px 300px 1fr;gap:20px}
   @media (max-width:1200px){.layout{grid-template-columns:1fr 1fr;}.preview-wrap{grid-column:1/-1}}
-  @media (max-width:720px){.layout{grid-template-columns:1fr}.preview-wrap{grid-column:auto}}
+  @media (max-width:720px){.topbar{display:block}.profile-link{margin-top:12px}.layout{grid-template-columns:1fr}.preview-wrap{grid-column:auto}}
   .panel-title{font-size:12px;color:var(--ui-muted);letter-spacing:.2em;text-transform:uppercase;margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--ui-border)}
 
   .panel{background:var(--ui-panel);border:1px solid var(--ui-border);border-radius:12px;padding:20px}
@@ -89,8 +97,16 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>推特封面图生成器</h1>
-  <div class="sub">输入标题 → 选配色 → 导出 PNG（2500×1000，比例 5:2）</div>
+  <div class="topbar">
+    <div>
+      <h1>推特封面图生成器</h1>
+      <div class="sub">输入标题 → 选配色 → 导出 PNG（2500×1000，比例 5:2）</div>
+    </div>
+    <a class="profile-link" href="https://x.com/wangdefou" target="_blank" rel="noopener noreferrer">
+      <span class="mark">X</span>
+      <span>访问 @wangdefou</span>
+    </a>
+  </div>
 
   <div class="layout">
     <!-- 第一列：文案设置 -->
