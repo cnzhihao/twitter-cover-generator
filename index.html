@@ -73,6 +73,50 @@
       opacity: .9
     }
 
+    .agent-btn {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #fff;
+      background: linear-gradient(135deg, #6366f1, #8b5cf6);
+      border: 1px solid transparent;
+      padding: 10px 14px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      height: 40px;
+      box-sizing: border-box;
+      transition: opacity .15s;
+    }
+
+    .agent-btn:hover {
+      opacity: .9
+    }
+
+    .copy-toast {
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #22c55e;
+      color: #fff;
+      padding: 10px 24px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
+    }
+
+    .copy-toast.show {
+      opacity: 1
+    }
+
     .profile-link .mark {
       font-weight: 800;
       font-size: 14px;
@@ -464,6 +508,10 @@
           <button class="sec" type="button" onclick="deleteSelectedStyle()"
             style="margin:0;padding:0 10px;width:auto;font-size:12px;height:100%;border-radius:0 8px 8px 0;border-left:none">删除</button>
         </div>
+        <a class="agent-btn" href="javascript:void(0)" onclick="copyAgentPrompt()">
+          <span>🤖</span>
+          <span>Agent 安装</span>
+        </a>
         <a class="profile-link" href="javascript:void(0)" onclick="exportAllZip()" style="cursor:pointer;height:40px">
           <span>📦</span>
           <span>导出 ZIP</span>
@@ -1317,6 +1365,63 @@
     loadState();
     render();
     setTimeout(fitAllPreviews, 100);
+
+    // ========== Agent 安装提示词 ==========
+    function copyAgentPrompt() {
+      const prompt = `全媒体封面图生成器 — AI Agent 安装指南
+
+这个工具能帮你为文章一键生成 Twitter/X、微信、微博、B站、掘金、百家号、头条号等 7 个平台的封面图。
+
+请执行以下步骤完成安装：
+
+1. 安装 Claude Code Skill（项目级）：
+   npx skills add cnzhihao/twitter-cover-generator
+
+2. 安装 OpenCLI 和 esbuild：
+   npm install -g @anthropic-ai/opencli esbuild
+
+3. 安装封面生成 OpenCLI 插件：
+   opencli plugin install github:cnzhihao/twitter-cover-generator/cover-generator
+   opencli plugin update cover-generator
+
+4. 验证安装成功：
+   opencli cover-generator --help
+   应显示 generate、suggest-style、list-palettes、list-platforms 四个命令
+
+如果第 4 步验证失败，按以下顺序排查：
+
+- 运行 opencli doctor 检查浏览器连接状态
+- 如果提示浏览器桥接未连接，说明 Chrome 浏览器中还没有安装 OpenCLI 扩展：
+  1. 打开 Chrome，访问 https://opencli.info/docs/zh/guide/browser-bridge.html
+  2. 按页面指引安装 OpenCLI Browser Bridge 扩展
+  3. 安装后重启浏览器，再次运行 opencli doctor 确认连接成功
+- 如果 esbuild 报错，确认 node 版本 >= 18（node -v 查看）
+- 如果插件编译失败，尝试 npm i -g esbuild 后重新 opencli plugin update cover-generator
+
+安装完成后，当我说"生成封面"或"做张封面图"时，按照 cover-generator skill 的指引帮我生成封面图。`;
+
+      navigator.clipboard.writeText(prompt).then(() => {
+        const toast = document.createElement('div');
+        toast.className = 'copy-toast';
+        toast.textContent = '✅ 提示词已复制，粘贴给 AI 即可安装';
+        document.body.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('show'));
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => toast.remove(), 300);
+        }, 2000);
+      }).catch(() => {
+        // fallback: 选中文本
+        const ta = document.createElement('textarea');
+        ta.value = prompt;
+        ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        ta.remove();
+        alert('提示词已复制到剪贴板');
+      });
+    }
   </script>
 </body>
 
