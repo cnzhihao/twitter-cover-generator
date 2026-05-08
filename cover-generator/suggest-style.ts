@@ -47,6 +47,9 @@ cli({
   columns: ['keyword', 'palette', 'font', 'reason'],
   func: async (_page, kwargs) => {
     const keyword = String(kwargs.keyword || '').trim();
+    if (!keyword) {
+      return [{ keyword: '', palette: 'ink-green', font: 'auto', reason: '请提供主题关键词，如：科技、文学、美食、商业、设计等' }];
+    }
     const result = STYLE_MAP[keyword];
     if (result) {
       return [{ keyword, palette: result.palette, font: result.font, reason: result.reason }];

@@ -8,10 +8,10 @@
 
 ```bash
 # npm 全局安装
-npm install -g @anthropic-ai/opencli
+npm install -g @jackwener/opencli
 
 # 或使用 yarn
-yarn global add @anthropic-ai/opencli
+yarn global add @jackwener/opencli
 
 # 验证安装
 opencli --version
@@ -175,8 +175,8 @@ opencli cover-generator list-platforms
 ## 开发
 
 ```bash
-# 安装本地插件（symlink，修改即时生效）
-opencli plugin install github:cnzhihao/twitter-cover-generator/cover-generator
+# 本地开发：symlink 安装，修改即时生效
+opencli plugin install file:///path/to/twitter-cover-generator/cover-generator
 
 # 修改 TS 后重新编译
 opencli plugin update cover-generator

@@ -14,3 +14,4 @@
 cover-generator/node_modules/
 cover-generator/package-lock.json
 cover-generator/*.js
+!cover-generator/scripts/*.js

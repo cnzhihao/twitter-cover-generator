@@ -1,7 +1,7 @@
 import { cli, Strategy } from '@jackwener/opencli/registry';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { execSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
 const ALL_PLATFORMS = [
   { id: 'twitter', name: 'X', width: 2500, height: 1000 },
@@ -165,30 +165,30 @@ cli({
     await page.wait({ selector: '#f-main', timeout: 15 });
     await page.wait(2);
 
-    const tag = String(kwargs.tag || '').replace(/'/g, "\\'");
-    const lead = String(kwargs.lead || '').replace(/'/g, "\\'");
-    const mainEscaped = mainTitle.replace(/'/g, "\\'");
-    const wmEscaped = watermark.replace(/'/g, "\\'");
-    const signEscaped = sign.replace(/'/g, "\\'");
+    const tag = JSON.stringify(String(kwargs.tag || ''));
+    const lead = JSON.stringify(String(kwargs.lead || ''));
+    const mainSerialized = JSON.stringify(mainTitle);
+    const wmSerialized = JSON.stringify(watermark);
+    const signSerialized = JSON.stringify(sign);
     const size = Number(kwargs.size) || 160;
-    const paletteId = String(kwargs.palette || 'ink-green');
-    const fontId = String(kwargs.font || 'auto');
-    const patternVal = String(kwargs.pattern || 'auto');
+    const paletteId = JSON.stringify(String(kwargs.palette || 'ink-green'));
+    const fontId = JSON.stringify(String(kwargs.font || 'auto'));
+    const patternVal = JSON.stringify(String(kwargs.pattern || 'auto'));
     const patternOpacity = Number(kwargs.patternOpacity);
-    const needSetPatternOpacity = kwargs.patternOpacity !== undefined && kwargs.patternOpacity !== -1;
+    const needSetPatternOpacity = kwargs.patternOpacity !== -1;
 
     await page.evaluate(`
       (function() {
-        document.getElementById('f-tag').value = '${tag}';
-        document.getElementById('f-lead').value = '${lead}';
-        document.getElementById('f-main').value = '${mainEscaped}';
-        document.getElementById('f-watermark').value = '${wmEscaped}';
-        document.getElementById('f-sign').value = '${signEscaped}';
+        document.getElementById('f-tag').value = ${tag};
+        document.getElementById('f-lead').value = ${lead};
+        document.getElementById('f-main').value = ${mainSerialized};
+        document.getElementById('f-watermark').value = ${wmSerialized};
+        document.getElementById('f-sign').value = ${signSerialized};
         document.getElementById('f-size').value = ${size};
-        document.getElementById('f-hl-font').value = '${fontId}';
-        document.getElementById('f-pattern').value = '${patternVal}';
+        document.getElementById('f-hl-font').value = ${fontId};
+        document.getElementById('f-pattern').value = ${patternVal};
         ${needSetPatternOpacity ? `document.getElementById('f-pattern-opacity').value = ${patternOpacity};` : ''}
-        applyPalette('${paletteId}');
+        applyPalette(${paletteId});
         render();
       })()
     `);
@@ -229,7 +229,8 @@ cli({
     const writtenFiles: string[] = [];
 
     for (const img of images) {
-      const fileName = `${img.name}_${img.width}x${img.height}.png`;
+      const safeName = String(img.name).replace(/[/\\]/g, '');
+      const fileName = `${safeName}_${img.width}x${img.height}.png`;
       fs.writeFileSync(path.join(outputDir, fileName), Buffer.from(img.data, 'base64'));
       writtenFiles.push(fileName);
       results.push({
@@ -247,7 +248,7 @@ cli({
       const mainText = mainTitle.replace(/`/g, '').replace(/[\\/:*?"<>|]/g, '').slice(0, 20);
       const zipName = `${mainText || 'covers'}.zip`;
       try {
-        execSync(`cd "${outputDir}" && zip -j "${zipName}" ${writtenFiles.map(f => `"${f}"`).join(' ')}`, { stdio: 'pipe' });
+        execFileSync('zip', ['-j', zipName, ...writtenFiles], { cwd: outputDir, stdio: 'pipe' });
         results.push({ platform: 'zip', file: zipName, label: 'ZIP 打包', width: 0, height: 0, status: 'ok' });
       } catch {
         results.push({ platform: 'zip', file: zipName, label: 'ZIP 打包', width: 0, height: 0, status: 'zip_failed' });

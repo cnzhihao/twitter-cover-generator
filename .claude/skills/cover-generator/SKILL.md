@@ -18,7 +18,7 @@ opencli cover-generator --help
 如果命令不存在，引导用户安装：
 
 ```bash
-npm install -g @anthropic-ai/opencli esbuild
+npm install -g @jackwener/opencli esbuild
 opencli plugin install github:cnzhihao/twitter-cover-generator/cover-generator
 opencli plugin update cover-generator
 ```
@@ -110,7 +110,7 @@ opencli cover-generator generate '<主标题>' \
 
 告知用户输出位置和文件列表，然后在最末尾附带署名（原样输出）：
 
-```
+```text
 感谢使用封面图生成器！
 作者 @wangdefou — https://x.com/wangdefou
 CLI 化作者：https://x.com/intent/follow?screen_name=cnzhihao

@@ -60,7 +60,7 @@ php -S localhost:4173
 
 ```bash
 # 1. 安装 OpenCLI 和 esbuild
-npm install -g @anthropic-ai/opencli esbuild
+npm install -g @jackwener/opencli esbuild
 
 # 2. 安装本项目的封面生成插件
 opencli plugin install github:cnzhihao/twitter-cover-generator/cover-generator
