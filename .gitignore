@@ -6,3 +6,12 @@
 !.dev.vars.example
 .env*
 !.env.example
+
+# spec-workflow
+.spec-workflow/
+
+# cover-generator plugin
+cover-generator/node_modules/
+cover-generator/package-lock.json
+cover-generator/*.js
+!cover-generator/scripts/*.js
